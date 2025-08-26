@@ -9,27 +9,39 @@
     .marker-container {
       text-align: center;
       cursor: pointer;
-      /* تم تعديل التحويل لضمان تمركز قاعدة الأيقونة على النقطة الجغرافية */
       transform: translate(-50%, -50%);
     }
-    .warehouse-icon {
-      width: 30px; /* يمكنك تعديل حجم الأيقونة من هنا */
+    /* تم تقسيم الأيقونات إلى فئات منفصلة لتسهيل التحكم */
+    .icon {
+      width: 30px;
       height: 30px;
-      background-image: url('warehouse.png' );
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      /* إضافة ظل خفيف للأيقونة لتبدو أفضل */
       filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
     }
-    .warehouse-label {
+    /* أيقونة المقر الرئيسي (يمكنك جعلها أكبر للتمييز) */
+    .headquarter-icon {
+      background-image: url('head-quarter.png');
+      width: 40px; /* حجم أكبر للمقر الرئيسي */
+      height: 40px;
+    }
+    /* أيقونة الفرع */
+    .branch-icon {
+      background-image: url('branch.png');
+    }
+    /* أيقونة المستودع */
+    .warehouse-icon {
+      background-image: url('warehouse.png');
+    }
+    .marker-label {
       color: white;
       background: rgba(0, 0, 0, 0.7);
       padding: 2px 5px;
       border-radius: 4px;
-      font-size: 12px; /* تصغير حجم الخط قليلاً */
-      margin-top: 2px; /* إضافة مسافة صغيرة بين الأيقونة والاسم */
-      white-space: nowrap; /* لمنع التفاف النص */
+      font-size: 12px;
+      margin-top: 2px;
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -37,42 +49,46 @@
   <div id="globeViz"></div>
   <script src="https://unpkg.com/globe.gl"></script>
   <script>
-    // قائمة المواقع الجديدة مع الإحداثيات
+    // 1. إضافة خاصية "type" لكل موقع
     const branches = [
-      // USA Branches
-      { lat: 40.7058, lng: -74.0734, name: "مستودع نيو جيرسي" },
-      { lat: 32.0268, lng: -81.1035, name: "مستودع سافانا، جورجيا" },
-      { lat: 29.6699, lng: -95.2608, name: "مستودع هيوستن، تكساس" },
-      { lat: 33.8882, lng: -118.2781, name: "مستودع جاردينا، كاليفورنيا" },
-      { lat: 47.2407, lng: -122.4221, name: "مستودع تاكوما، واشنطن" },
+      // USA Branches (Warehouses )
+      { lat: 40.7058, lng: -74.0734, name: "مستودع نيو جيرسي", type: 'warehouse' },
+      { lat: 32.0268, lng: -81.1035, name: "مستودع سافانا، جورجيا", type: 'warehouse' },
+      { lat: 29.6699, lng: -95.2608, name: "مستودع هيوستن، تكساس", type: 'warehouse' },
+      { lat: 33.8882, lng: -118.2781, name: "مستودع جاردينا، كاليفورنيا", type: 'warehouse' },
+      { lat: 47.2407, lng: -122.4221, name: "مستودع تاكوما، واشنطن", type: 'warehouse' },
       // Middle East & Asia Branches
-      { lat: 25.3357, lng: 55.4044, name: "فرع الشارقة 1" },
-      { lat: 25.3348, lng: 55.4078, name: "فرع الشارقة 2" },
-      { lat: 23.6405, lng: 58.0968, name: "فرع مسقط، عمان" },
-      { lat: 17.0130, lng: 54.0442, name: "فرع صلالة، عمان" },
-      { lat: 30.5124, lng: 47.8187, name: "فرع البصرة، العراق" },
-      { lat: 11.5803, lng: 104.8833, name: "فرع كمبوديا" }
+      { lat: 25.3357, lng: 55.4044, name: "المقر الرئيسي - الشارقة", type: 'headquarter' }, // المقر الرئيسي
+      { lat: 25.3348, lng: 55.4078, name: "فرع الشارقة 2", type: 'branch' },
+      { lat: 23.6405, lng: 58.0968, name: "فرع مسقط، عمان", type: 'branch' },
+      { lat: 17.0130, lng: 54.0442, name: "فرع صلالة، عمان", type: 'branch' },
+      { lat: 30.5124, lng: 47.8187, name: "فرع البصرة، العراق", type: 'branch' },
+      { lat: 11.5803, lng: 104.8833, name: "فرع كمبوديا", type: 'branch' }
     ];
 
-    const icons = [
-      { ico1: head, url: "head-quarter.png" },
-      { ico2: branch, url: "branch.png" },
-      { ico3: warehouse, url: "warehouse.png" },
-    ];
+    // 2. إنشاء خريطة لأسماء الأيقونات بناءً على النوع
+    const iconClasses = {
+      headquarter: 'headquarter-icon',
+      branch: 'branch-icon',
+      warehouse: 'warehouse-icon'
+    };
 
-    const globe = Globe( )(document.getElementById('globeViz'))
+    const globe = Globe()(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .htmlElementsData(branches)
       .htmlElement(d => {
         const el = document.createElement('div');
         el.classList.add('marker-container');
+
+        // 3. تحديد فئة الأيقونة ديناميكيًا بناءً على نوع الموقع
+        const iconClass = iconClasses[d.type] || 'branch-icon'; // استخدام أيقونة الفرع كافتراضي
+
         el.innerHTML = `
-          <div class="warehouse-icon"></div>
-          <div class="warehouse-label">${d.name}</div>
+          <div class="icon ${iconClass}"></div>
+          <div class="marker-label">${d.name}</div>
         `;
         return el;
       });
   </script>
 </body>
 </html>
-
