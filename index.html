@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Globe</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #globeViz { width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="globeViz"></div>
+  <script src="https://unpkg.com/globe.gl"></script>
+  <script>
+    const globe = Globe()(document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .pointsData([
+        { lat: 24.7136, lng: 46.6753, name: "مستودع الرياض" },
+        { lat: 25.276987, lng: 55.296249, name: "مستودع دبي" },
+        { lat: 30.0444, lng: 31.2357, name: "مستودع القاهرة" }
+      ])
+      .pointAltitude(0.05)
+      .pointColor(() => "red")
+      .pointLabel(d => d.name);
+  </script>
+</body>
+</html>
