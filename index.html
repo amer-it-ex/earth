@@ -10,7 +10,7 @@
       text-align: center;
       cursor: pointer;
       transform: translate(-50%, -50%);
-      background: linear-gradient(to bottom, #a7c5e8, #f0f8ff);
+      
     }
    
     .icon {
@@ -76,6 +76,7 @@
 
     const globe = Globe()(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
       .htmlElementsData(branches)
       .htmlElement(d => {
         const el = document.createElement('div');
@@ -93,6 +94,7 @@
   </script>
 </body>
 </html>
+
 
 
 
