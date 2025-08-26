@@ -6,27 +6,42 @@
   <style>
     body { margin: 0; overflow: hidden; }
     #globeViz { width: 100vw; height: 100vh; }
-    .warehouse-marker {
-      width: 30px; /* حجم أيقونة المستودع */
-      height: 30px;
-      background-image: url('https://i.imgur.com/n6eG2sF.png' ); /* رابط أيقونة المستودع */
+    .marker-container {
+      position: relative;
+      text-align: center;
+      width: 40px; /* زيادة حجم الحاوية قليلاً */
+      height: 40px;
+      transform: translate(-50%, -100%); /* تحريك الحاوية للأعلى بحيث تكون قاعدة الأيقونة هي النقطة المحددة */
+      cursor: pointer;
+    }
+    .warehouse-icon {
+      width: 40px;
+      height: 40px;
+      /* رابط أيقونة جديد وموثوق */
+      background-image: url('https://cdn-icons-png.flaticon.com/512/993/993725.png' );
       background-size: contain;
       background-repeat: no-repeat;
-      cursor: pointer;
-      /* توسيط الأيقونة فوق النقطة الجغرافية بالضبط */
-      transform: translate(-50%, -50%);
+      background-position: center;
     }
     .warehouse-label {
       color: white;
-      background-color: rgba(0, 0, 0, 0.5);
-      padding: 2px 5px;
-      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 3px 6px;
+      border-radius: 4px;
       font-size: 14px;
       position: absolute;
-      top: -25px; /* تعديل موقع الاسم فوق الأيقونة */
+      bottom: 45px; /* وضع الاسم فوق الأيقونة */
       left: 50%;
       transform: translateX(-50%);
       white-space: nowrap;
+      visibility: hidden; /* إخفاء الاسم بشكل افتراضي */
+      opacity: 0;
+      transition: visibility 0s, opacity 0.2s linear;
+    }
+    /* إظهار الاسم عند مرور الماوس فوق الحاوية */
+    .marker-container:hover .warehouse-label {
+      visibility: visible;
+      opacity: 1;
     }
   </style>
 </head>
@@ -45,7 +60,11 @@
       .htmlElementsData(warehouses)
       .htmlElement(d => {
         const el = document.createElement('div');
-        el.innerHTML = `<div class="warehouse-marker" title="${d.name}"></div><div class="warehouse-label">${d.name}</div>`;
+        el.classList.add('marker-container');
+        el.innerHTML = `
+          <div class="warehouse-icon"></div>
+          <div class="warehouse-label">${d.name}</div>
+        `;
         return el;
       });
   </script>
