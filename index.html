@@ -2,46 +2,34 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <title>3D Globe with Warehouse Markers</title>
+  <title>3D Globe with Company Branches</title>
   <style>
     body { margin: 0; overflow: hidden; }
     #globeViz { width: 100vw; height: 100vh; }
     .marker-container {
-      position: relative;
       text-align: center;
-      width: 40px; /* زيادة حجم الحاوية قليلاً */
-      height: 40px;
-      transform: translate(-50%, -100%); /* تحريك الحاوية للأعلى بحيث تكون قاعدة الأيقونة هي النقطة المحددة */
       cursor: pointer;
+      /* تم تعديل التحويل لضمان تمركز قاعدة الأيقونة على النقطة الجغرافية */
+      transform: translate(-50%, -50%);
     }
     .warehouse-icon {
-      width: 40px;
-      height: 40px;
-      /* رابط أيقونة جديد وموثوق */
+      width: 30px; /* يمكنك تعديل حجم الأيقونة من هنا */
+      height: 30px;
       background-image: url('https://cdn-icons-png.flaticon.com/512/993/993725.png' );
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+      /* إضافة ظل خفيف للأيقونة لتبدو أفضل */
+      filter: drop-shadow(0px 0px 3px rgba(0,0,0,0.5));
     }
     .warehouse-label {
       color: white;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 3px 6px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2px 5px;
       border-radius: 4px;
-      font-size: 14px;
-      position: absolute;
-      bottom: 45px; /* وضع الاسم فوق الأيقونة */
-      left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
-      visibility: hidden; /* إخفاء الاسم بشكل افتراضي */
-      opacity: 0;
-      transition: visibility 0s, opacity 0.2s linear;
-    }
-    /* إظهار الاسم عند مرور الماوس فوق الحاوية */
-    .marker-container:hover .warehouse-label {
-      visibility: visible;
-      opacity: 1;
+      font-size: 12px; /* تصغير حجم الخط قليلاً */
+      margin-top: 2px; /* إضافة مسافة صغيرة بين الأيقونة والاسم */
+      white-space: nowrap; /* لمنع التفاف النص */
     }
   </style>
 </head>
@@ -49,15 +37,26 @@
   <div id="globeViz"></div>
   <script src="https://unpkg.com/globe.gl"></script>
   <script>
-    const warehouses = [
-      { lat: 24.7136, lng: 46.6753, name: "مستودع الرياض" },
-      { lat: 25.276987, lng: 55.296249, name: "مستودع دبي" },
-      { lat: 30.0444, lng: 31.2357, name: "مستودع القاهرة" }
+    // قائمة المواقع الجديدة مع الإحداثيات
+    const branches = [
+      // USA Branches
+      { lat: 40.7058, lng: -74.0734, name: "مستودع نيو جيرسي" },
+      { lat: 32.0268, lng: -81.1035, name: "مستودع سافانا، جورجيا" },
+      { lat: 29.6699, lng: -95.2608, name: "مستودع هيوستن، تكساس" },
+      { lat: 33.8882, lng: -118.2781, name: "مستودع جاردينا، كاليفورنيا" },
+      { lat: 47.2407, lng: -122.4221, name: "مستودع تاكوما، واشنطن" },
+      // Middle East & Asia Branches
+      { lat: 25.3357, lng: 55.4044, name: "فرع الشارقة 1" },
+      { lat: 25.3348, lng: 55.4078, name: "فرع الشارقة 2" },
+      { lat: 23.6405, lng: 58.0968, name: "فرع مسقط، عمان" },
+      { lat: 17.0130, lng: 54.0442, name: "فرع صلالة، عمان" },
+      { lat: 30.5124, lng: 47.8187, name: "فرع البصرة، العراق" },
+      { lat: 11.5803, lng: 104.8833, name: "فرع كمبوديا" }
     ];
 
     const globe = Globe( )(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-      .htmlElementsData(warehouses)
+      .htmlElementsData(branches)
       .htmlElement(d => {
         const el = document.createElement('div');
         el.classList.add('marker-container');
