@@ -15,7 +15,7 @@
     .warehouse-icon {
       width: 30px; /* يمكنك تعديل حجم الأيقونة من هنا */
       height: 30px;
-      background-image: url('https://cdn-icons-png.flaticon.com/512/993/993725.png' );
+      background-image: url('warehouse.png' );
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -54,6 +54,12 @@
       { lat: 11.5803, lng: 104.8833, name: "فرع كمبوديا" }
     ];
 
+    const icons = [
+      { ico1: head, url: "head-quarter.png" },
+      { ico2: branch, url: "branch.png" },
+      { ico3: warehouse, url: "warehouse.png" },
+    ];
+
     const globe = Globe( )(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
       .htmlElementsData(branches)
@@ -69,3 +75,4 @@
   </script>
 </body>
 </html>
+
