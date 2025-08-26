@@ -2,28 +2,52 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8" />
-  <title>3D Globe</title>
+  <title>3D Globe with Warehouse Markers</title>
   <style>
     body { margin: 0; overflow: hidden; }
     #globeViz { width: 100vw; height: 100vh; }
+    .warehouse-marker {
+      width: 30px; /* حجم أيقونة المستودع */
+      height: 30px;
+      background-image: url('https://i.imgur.com/n6eG2sF.png' ); /* رابط أيقونة المستودع */
+      background-size: contain;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      /* توسيط الأيقونة فوق النقطة الجغرافية بالضبط */
+      transform: translate(-50%, -50%);
+    }
+    .warehouse-label {
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 14px;
+      position: absolute;
+      top: -25px; /* تعديل موقع الاسم فوق الأيقونة */
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
   <div id="globeViz"></div>
   <script src="https://unpkg.com/globe.gl"></script>
   <script>
-    const globe = Globe()(document.getElementById('globeViz'))
-      .globeImageUrl('https://eoimages.gsfc.nasa.gov/images/imagerecords/73000/73909/world.topo.bathy.200407.3x21600x10800.jpg')
-      .pointsData([
-        { lat: 24.7136, lng: 46.6753, name: "مستودع الرياض" },
-        { lat: 25.276987, lng: 55.296249, name: "مستودع دبي" },
-        { lat: 30.0444, lng: 31.2357, name: "مستودع القاهرة" }
-      ])
-      .pointAltitude(0.05)
-      .pointColor(() => "red")
-      .pointLabel(d => d.name);
+    const warehouses = [
+      { lat: 24.7136, lng: 46.6753, name: "مستودع الرياض" },
+      { lat: 25.276987, lng: 55.296249, name: "مستودع دبي" },
+      { lat: 30.0444, lng: 31.2357, name: "مستودع القاهرة" }
+    ];
+
+    const globe = Globe( )(document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+      .htmlElementsData(warehouses)
+      .htmlElement(d => {
+        const el = document.createElement('div');
+        el.innerHTML = `<div class="warehouse-marker" title="${d.name}"></div><div class="warehouse-label">${d.name}</div>`;
+        return el;
+      });
   </script>
 </body>
 </html>
-
-
